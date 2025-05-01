@@ -23,7 +23,14 @@ async def save_weather_data(key: str, data: dict):
     if redis_client is None:
         await init_redis()
     try:
-        await redis_client.setex(key, REDIS_TTL, json.dumps(data)) # type: ignore
+        existing_data_raw = await redis_client.get(key)  # type: ignore
+
+        if existing_data_raw is not None:
+            existing_data = json.loads(existing_data_raw)
+            if existing_data == data:
+                return  # Skip saving if data is identical
+
+        await redis_client.setex(key, REDIS_TTL, json.dumps(data))  # type: ignore        
     except Exception as e:
         logger.error(f"Failed to save data to Redis: {e}")
 

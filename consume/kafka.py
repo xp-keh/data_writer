@@ -55,12 +55,12 @@ class AsyncConsumer:
 
                 key = f"weather:{weather_data['timestamp']}_{weather_data['location']}"
 
-                await save_weather_data(key, weather_data)
-
                 try:
                     await self.websocket_manager.broadcast(json.dumps(weather_data))
                 except WebSocketDisconnect:
                     self.logger.warning("WebSocket disconnected. Skipping message broadcast.")
+
+                await save_weather_data(key, weather_data)
 
                 try:
                     await self.consumer.commit()
