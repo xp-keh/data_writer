@@ -16,9 +16,9 @@ gmt7 = pytz.timezone("Asia/Jakarta")
 
 def format_unix_to_gmt7_string(unix_ts):
     try:
-        dt_utc = datetime.utcfromtimestamp(unix_ts).replace(tzinfo=pytz.utc)
-        # dt_gmt7 = dt_utc.replace(tzinfo=pytz.utc).astimezone(gmt7)
-        return dt_utc.strftime("%d-%m-%YT%H:%M:%S")
+        dt_utc = datetime.utcfromtimestamp(unix_ts)
+        dt_gmt7 = dt_utc.replace(tzinfo=pytz.utc).astimezone(gmt7)
+        return dt_gmt7.strftime("%d-%m-%YT%H:%M:%S")
     except Exception:
         return ""
     
