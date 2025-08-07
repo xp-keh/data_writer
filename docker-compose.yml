@@ -22,7 +22,7 @@ services:
       - "8012:8012"
     networks:
       nginx-manager_customnetwork:
-        ipv4_address: 172.20.0.128
+        ipv4_address: 172.20.0.129
     depends_on:
       - redis
 
@@ -37,7 +37,7 @@ services:
       - "6379:6379"
     networks:
       nginx-manager_customnetwork:
-        ipv4_address: 172.20.0.129
+        ipv4_address: 172.20.0.130
 
 volumes:
   redis_data:
