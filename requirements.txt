@@ -12,3 +12,5 @@ websockets
 orjson
 uvloop
 httpx
+minio==7.2.7
+

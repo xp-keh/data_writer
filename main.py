@@ -9,10 +9,17 @@ from consume.kafka import AsyncConsumer
 from config.utils import get_env_value
 from datastore.redis_store import init_redis
 from writer.clickhouse_writer import bulk_write_to_clickhouse
+from minio import Minio
+
 
 kafka_broker = get_env_value("KAFKA_BROKER")
 kafka_consume_topic = get_env_value("KAFKA_CONSUME_TOPIC")
 kafka_consumer_group = get_env_value("KAFKA_CONSUMER_GROUP")
+
+MINIO_ENDPOINT = get_env_value("MINIO_ENDPOINT")
+MINIO_ACCESS_KEY = get_env_value("MINIO_ACCESS_KEY")
+MINIO_SECRET_KEY = get_env_value("MINIO_SECRET_KEY")
+MINIO_BUCKET = get_env_value("MINIO_BUCKET")
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
@@ -22,6 +29,21 @@ consumer = AsyncConsumer(kafka_broker, kafka_consume_topic, kafka_consumer_group
 
 scheduler = AsyncIOScheduler()
 scheduler.start()
+
+minio_client = Minio(
+    MINIO_ENDPOINT.replace("http://", "").replace("https://", ""),
+    access_key=MINIO_ACCESS_KEY,
+    secret_key=MINIO_SECRET_KEY,
+    secure=False
+)
+
+# Create bucket if not exists
+if not minio_client.bucket_exists(MINIO_BUCKET):
+    minio_client.make_bucket(MINIO_BUCKET)
+    logging.info(f"Bucket '{MINIO_BUCKET}' created.")
+else:
+    logging.info(f"Bucket '{MINIO_BUCKET}' already exists.")
+
 
 @app.websocket("/")
 async def websocket_endpoint(websocket: WebSocket):

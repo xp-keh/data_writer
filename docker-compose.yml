@@ -17,6 +17,10 @@ services:
       - CLICKHOUSE_DATABASE=${CLICKHOUSE_DATABASE}
       - CLICKHOUSE_USER=${CLICKHOUSE_USER}
       - CLICKHOUSE_PASSWORD=${CLICKHOUSE_PASSWORD}
+      - MINIO_ENDPOINT=http://node1:9000 #TODO: put to env var
+      - MINIO_ACCESS_KEY=userWeather
+      - MINIO_SECRET_KEY=weatherWriter
+      - MINIO_BUCKET=weather
     command: uvicorn main:app --host 0.0.0.0 --port 8012
     ports:
       - "8012:8012"
